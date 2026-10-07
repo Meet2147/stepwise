@@ -42,6 +42,10 @@ def own_hosts() -> set[str]:
     return hosts
 
 
+# The only third-party host the site may load anything from: the live Product Hunt badge image.
+THIRD_PARTY_IMG_HOSTS = {"api.producthunt.com"}
+
+
 def is_external(url: str, hosts: set[str]) -> bool:
     url = url.strip()
     if url.startswith("//"):
@@ -157,7 +161,8 @@ def check_pages(hosts: set[str]) -> None:
             err(f"{page.name}: duplicate id(s): {', '.join(sorted(dupes))}")
 
         for tag, url in parser.resources:
-            if is_external(url, hosts):
+            if is_external(url, hosts) and not (tag == "img" and urlparse(url).scheme == "https"
+                                                 and urlparse(url).hostname in THIRD_PARTY_IMG_HOSTS):
                 err(f"{page.name}: <{tag}> loads an external resource: {url}")
             target = local_target(url)
             if target is not None and not target.exists():
@@ -281,7 +286,7 @@ def check_headers() -> None:
             directives.setdefault(tokens[0], tokens[1:])
         expected = {
             "default-src": ["'none'"], "script-src": ["'none'"], "style-src": ["'self'"],
-            "img-src": ["'self'"], "font-src": ["'self'"], "media-src": ["'self'"],
+            "img-src": ["'self'"] + [f"https://{h}" for h in sorted(THIRD_PARTY_IMG_HOSTS)], "font-src": ["'self'"], "media-src": ["'self'"],
             "manifest-src": ["'self'"], "connect-src": ["'none'"], "frame-src": ["'none'"],
             "object-src": ["'none'"], "worker-src": ["'none'"], "base-uri": ["'none'"],
             "form-action": ["'none'"], "frame-ancestors": ["'none'"],
@@ -293,7 +298,8 @@ def check_headers() -> None:
             err("CSP lacks upgrade-insecure-requests")
         for name, tokens in directives.items():
             for token in tokens:
-                if token not in ("'none'", "'self'"):
+                if token not in ("'none'", "'self'") and not (
+                        name == "img-src" and token in {f"https://{h}" for h in THIRD_PARTY_IMG_HOSTS}):
                     err(f"CSP {name} allows {token}")
 
     for header in ("strict-transport-security", "x-content-type-options", "x-frame-options",

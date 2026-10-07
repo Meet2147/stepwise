@@ -213,3 +213,14 @@ details p { margin: 0 0 20px; max-width: var(--measure); color: var(--ink-soft);
   .raised, kbd { box-shadow: none; border: 1.5px solid var(--edge-strong); }
   .hero::after, .closing::after { display: none; }
 }
+
+/* Product Hunt: a self-hosted badge and a card built from site styles (no third-party requests). */
+.ph-badge { margin: 28px 0 0; }
+.ph-badge a { display: inline-block; border-radius: 10px; }
+.ph-badge img { display: block; height: auto; max-width: 100%; }
+.ph-card-wrap { padding: 0 20px 72px; }
+.ph-card { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 12px 16px; max-width: 500px; margin: 0 auto; padding: 20px; border-radius: 16px; background: var(--base); text-align: left; }
+.ph-card img { width: 64px; height: 64px; border-radius: 14px; }
+.ph-card h3 { margin: 0; font-size: 1.1rem; color: var(--ink); }
+.ph-card p { margin: 4px 0 0; color: var(--muted); font-size: 0.95rem; line-height: 1.4; }
+.ph-card .btn { grid-column: 1 / -1; justify-self: start; }
