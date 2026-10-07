@@ -1,0 +1,19 @@
+name: Site checks
+
+# Fails the commit if the website breaks its security, link, accessibility or contrast rules.
+# Set Render's autoDeployTrigger to `checksPass` to deploy only when this passes.
+on:
+  push:
+  pull_request:
+
+jobs:
+  site:
+    name: Site checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check the website
+        run: python3 scripts/check_site.py

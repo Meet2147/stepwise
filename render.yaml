@@ -1,0 +1,75 @@
+# Render Blueprint for the Stepwise website (a static site).
+#
+# Layout assumed: this file at the repo root and the site in ./website (the whole project is the
+# repo). If you push ONLY the website folder as the repo, set staticPublishPath to ./ and move
+# the scripts/ check out of CI.
+#
+# Render has no `_headers` file, so every response header lives here. Edit them here only;
+# scripts/check_site.py reads this file and fails if the security rules are weakened.
+services:
+  - type: web
+    name: stepwise-site
+    runtime: static
+    staticPublishPath: ./website
+    buildCommand: echo "static site, nothing to build"
+    autoDeployTrigger: commit   # use `checksPass` to wait for the GitHub "Site checks" workflow
+    buildFilter:
+      paths:
+        - website/**
+        - render.yaml
+
+    # After you own the domain, uncomment, set it, and run scripts/set_domain.py with the same
+    # name so the canonical URLs, sitemap, security.txt and the app's update feed match.
+    # Then consider `renderSubdomainPolicy: disabled` so the *.onrender.com copy stops being served.
+    domains:
+      - stepwise.dashovia.app
+
+    headers:
+      # Static site: no JavaScript, no third parties, no forms, so the policy can be very strict.
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'none'; script-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; manifest-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: Permissions-Policy
+        value: "accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+      - path: /*
+        name: Cross-Origin-Opener-Policy
+        value: same-origin
+      - path: /*
+        name: Cross-Origin-Resource-Policy
+        value: same-origin
+
+      # Different header names than the rules above, so nothing is set twice.
+      - path: /shots/*
+        name: Cache-Control
+        value: public, max-age=604800
+      # Installers have versioned names, so they can be cached for a year.
+      - path: /downloads/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /downloads/*
+        name: Content-Disposition
+        value: attachment
+      # The update feed must never be served stale, or a new release won't be offered.
+      - path: /appcast.xml
+        name: Cache-Control
+        value: no-cache
+
+    routes:
+      # Render serves a file as-is and applies rules only where no file exists, so this makes
+      # /privacy work (the page's canonical URL) while /privacy.html keeps working too.
+      - type: rewrite
+        source: /privacy
+        destination: /privacy.html

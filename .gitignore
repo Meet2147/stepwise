@@ -1,0 +1,17 @@
+# This repository is PUBLIC and exists to deploy the Stepwise website on Render.
+# Everything is ignored except the files the site needs, so the app's source code, signing and
+# release scripts, and docs cannot be committed by accident (`git add .` is safe here).
+#
+# To keep the whole project in git instead, make the GitHub repo PRIVATE first, then delete
+# everything below the line marked WHITELIST and re-add the old ignores (dist/, xcuserdata/, ...).
+
+# --- WHITELIST ---
+/*
+!/.gitignore
+!/render.yaml
+!/website/
+!/scripts/
+/scripts/*
+!/scripts/check_site.py
+!/.github/
+.DS_Store
