@@ -3,6 +3,17 @@
     <channel>
         <title>Stepwise</title>
         <item>
+            <title>0.1.1</title>
+            <pubDate>Thu, 08 Oct 2026 22:01:58 +0530</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>0.1.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://stepwise.dashovia.app/downloads/Stepwise-0.1.1.dmg" length="1736441" type="application/octet-stream" sparkle:edSignature="qVlgVT0ULgOqqonzhGt4fB6s1nNWu9spuKa1n+mIz8JOOdWSJaWT6wLqOtm22521QGPuARmInx913dAM74k8Dg=="/>
+            <sparkle:deltas>
+                <enclosure url="https://stepwise.dashovia.app/downloads/Stepwise2-1.delta" sparkle:deltaFrom="1" length="23510" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="976464" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="xb/N1d8MlvfFmFcaIftZLyue/NTFJWL77lYuD4NxYc4ojbOQ5vA+IAwj7BVpMQY8TfiqzocIQYFzXVoFooY0BA=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
             <title>0.1.0</title>
             <pubDate>Wed, 07 Oct 2026 19:11:25 +0530</pubDate>
             <sparkle:version>1</sparkle:version>
